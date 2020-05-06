@@ -29,3 +29,5 @@ Route::middleware('auth:api')->prefix('/user')->name('api.user.')->group(functio
         Route::post('/delete/{id}', 'Api\FileController@delete')->name('file.delete');
     });
 });
+
+
