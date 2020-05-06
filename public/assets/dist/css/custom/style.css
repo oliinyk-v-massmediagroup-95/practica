@@ -1,0 +1,11 @@
+.post {
+    border-bottom: 1px solid #adb5bd !important;
+}
+
+.post:last-child{
+    border-bottom: none !important;
+}
+
+.table-user__image{
+    width: 100px; height: 100px; object-fit: cover; border-radius: 100%;
+}
