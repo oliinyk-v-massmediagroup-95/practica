@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\File;
 
+use App\Models\File;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,9 +12,9 @@ use Tests\TestCase;
 
 class CreateFileTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, FileDelete;
 
-    public function testCreateFile()
+    public function testFileCreate()
     {
         $user = factory(User::class)->create();
         $file = UploadedFile::fake()->image('avatar.jpg');
@@ -27,7 +28,13 @@ class CreateFileTest extends TestCase
             'id' => 1
         ]);
 
-        $this->deleteCreatedFile($user, $file);
+        $this->assertDatabaseHas('files', [
+            'id' => 1,
+        ]);
+
+        $fileModel = File::first();
+
+        $this->assertFileExistAndDelete($fileModel);
     }
 
     public function testCreateFileWithDeleteDate()
@@ -45,7 +52,12 @@ class CreateFileTest extends TestCase
             'id' => 1
         ]);
 
-        $this->deleteCreatedFile($user, $file);
+        $this->assertDatabaseHas('files', [
+            'id' => 1,
+        ]);
+
+        $fileModel = File::first();
+        $this->assertFileExistAndDelete($fileModel);
     }
 
     public function testCreateFileWithUserComment()
@@ -63,7 +75,12 @@ class CreateFileTest extends TestCase
             'id' => 1
         ]);
 
-        $this->deleteCreatedFile($user, $file);
+        $this->assertDatabaseHas('files', [
+            'id' => 1,
+        ]);
+
+        $fileModel = File::first();
+        $this->assertFileExistAndDelete($fileModel);
     }
 
     public function testCreateFileWithUserCommentAndDeleteDate()
@@ -82,7 +99,12 @@ class CreateFileTest extends TestCase
             'id' => 1
         ]);
 
-        $this->deleteCreatedFile($user, $file);
+        $this->assertDatabaseHas('files', [
+            'id' => 1,
+        ]);
+
+        $fileModel = File::first();
+        $this->assertFileExistAndDelete($fileModel);
     }
 
     public function testValidateFileSize()
@@ -138,13 +160,5 @@ class CreateFileTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-    }
-
-    private function deleteCreatedFile(User $user, UploadedFile $file)
-    {
-        $path = 'uploads/' . $user->id . '/' . $file->hashName();
-
-        \Storage::disk('public')->assertExists($path);
-        \Storage::disk('public')->delete($path);
     }
 }

@@ -25,7 +25,7 @@ class LinkCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'file_id' => ['required','exists:files,id'],
+            'file_id' => ['required'],
             'only_once' => [
                 'required',
                 function ($attribute, $value, $fail) {

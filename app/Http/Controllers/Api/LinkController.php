@@ -17,9 +17,11 @@ class LinkController extends Controller
         $file_id = $request->input('file_id');
         $only_once = $request->input('only_once');
 
-        $file = File::findUserFile($user, $file_id)->firstOr(function () {
-            abort(404);
-        });
+        $file = File::findUserFile($user, $file_id)->first();
+
+        if (!isset($file)) {
+            return response(['message' => 'File not found'], 404);
+        }
 
         $link = $service->generateLink([
             'user_id' => $user->id,

@@ -11,26 +11,23 @@ use Tests\TestCase;
 
 class GetFileTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, FileDelete;
 
     public function testGetExistingFile()
     {
         $user = factory(User::class)->create();
+        $file = UploadedFile::fake()->image('avatar.jpg');
 
-        $original_name = 'avatar.jpeg';
-        $file = UploadedFile::fake()->image($original_name);
-        $folder_on_disk = 'uploads/' . $user->id;
-        $file_name = $file->hashName();
-
-        \Storage::disk('public')->putFile($folder_on_disk, $file);
-
-        $fileModel = factory(File::class)->create([
-            'user_id' => $user->id,
-            'ext' => 'jpeg',
-            'original_name' => $original_name,
-            'path' => $folder_on_disk . '/' . $file_name,
-            'name' => $file_name
+        $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
+            'api_token' => $user->api_token,
+            'file' => $file
         ]);
+
+        $this->assertDatabaseHas('files', [
+            'id' => 1
+        ]);
+
+        $fileModel = File::first();
 
         $response = $this->get($this->prepareUrlForRequest(
             '/api/user/file/get/' . $fileModel->id . "?api_token=" . $user->api_token
@@ -39,7 +36,7 @@ class GetFileTest extends TestCase
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'image/jpeg');
 
-        \Storage::disk('public')->delete($folder_on_disk . '/' . $file_name);
+        $this->assertFileExistAndDelete($fileModel);
     }
 
     public function testGetNotExistingFile()
@@ -55,7 +52,7 @@ class GetFileTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function testNotExistingUserRequest()
+    public function testNotExistingUserToken()
     {
         $response = $this->withHeaders([
             'Accept' => 'application/json'
