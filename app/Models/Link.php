@@ -21,14 +21,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link whereEntryCounter($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link whereFileId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link whereOnlyOnce($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link whereToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link whereUserId($value)
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link onlyReusable()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link onlyTemporary()
@@ -71,7 +63,7 @@ class Link extends Model
 
     public function isOneTimeLink(): bool
     {
-        return $this->only_once === self::ONE_TIME_LINK;
+        return $this->only_once == self::ONE_TIME_LINK;
     }
 
     public function hasBeenVisited(): bool

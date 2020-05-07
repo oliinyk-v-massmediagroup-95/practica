@@ -14,8 +14,8 @@ class AddPathFieldFilesTable extends Migration
     public function up()
     {
         Schema::table('files', function (Blueprint $table) {
-            $table->string('path');
-            $table->string('original_name');
+            $table->string('path')->default('');
+            $table->string('original_name')->default('');
         });
     }
 

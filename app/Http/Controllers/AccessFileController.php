@@ -27,7 +27,7 @@ class AccessFileController extends Controller
         $token = $request->token;
         $link = Link::with('file')->where('token', $token)->first();
 
-        if (!isset($link)) {
+        if (!isset($link) || !is_file($link->file->getFilePath())) {
             abort(404);
         }
 

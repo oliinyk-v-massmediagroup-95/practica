@@ -81,7 +81,7 @@ class FileService
 
     public function userDeleteFile(User $user, File $file): void
     {
-        if ($user->id === $file->user_id) {
+        if ($user->id == $file->user_id) {
             if (file_exists($file->getFilePath())) {
                 unlink($file->getFilePath()) ;
             }

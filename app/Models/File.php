@@ -66,7 +66,7 @@ class File extends Model
 
     public function getFilePath(): string
     {
-        return storage_path('app/public/uploads/' . $this->user_id . '/' . $this->name);
+        return storage_path('app/public/'.$this->path);
     }
 
     public function getUrlPath(): string
