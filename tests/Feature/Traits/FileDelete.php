@@ -1,12 +1,11 @@
 <?php
 
-namespace Tests\Feature\Api\File;
+namespace Tests\Feature\Traits;
 
 use App\Models\File;
 
 trait FileDelete
 {
-
     private function assertFileExistAndDelete(File $file)
     {
         $this->assertTrue(file_exists($file->getFilePath()));

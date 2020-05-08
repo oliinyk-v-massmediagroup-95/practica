@@ -32,6 +32,11 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "hooks": {
+            "pre-commit": [
+                "php-cs-fixer fix ./"
+            ]
         }
     },
     "autoload": {
@@ -61,5 +66,5 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
-    }
+    },
 }

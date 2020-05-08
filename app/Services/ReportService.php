@@ -2,11 +2,9 @@
 
 namespace App\Services;
 
+use App\User;
 use App\Models\File;
 use App\Models\Link;
-use App\User;
-use Illuminate\Support\Collection;
-use phpDocumentor\Reflection\Types\Integer;
 
 class ReportService
 {

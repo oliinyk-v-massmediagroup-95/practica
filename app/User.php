@@ -2,11 +2,10 @@
 
 namespace App;
 
-use App\Models\Comment;
 use App\Models\File;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Comment;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * App\User
@@ -37,6 +36,8 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
+ * @property-read int|null $comments_count
  */
 class User extends Authenticatable
 {
@@ -48,7 +49,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'api_token'
+        'name', 'email', 'password', 'api_token',
     ];
 
     /**
@@ -57,7 +58,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'api_token'
+        'password', 'remember_token', 'api_token',
     ];
 
     /**

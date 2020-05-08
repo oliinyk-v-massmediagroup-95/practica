@@ -2,13 +2,12 @@
 
 namespace Tests\Feature\Api\Link;
 
-use App\Models\File;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\UploadedFile;
-use Tests\Feature\Api\File\FileDelete;
 use Tests\TestCase;
+use App\Models\File;
+use Illuminate\Http\UploadedFile;
+use Tests\Feature\Traits\FileDelete;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateLinkTest extends TestCase
 {
@@ -21,7 +20,7 @@ class CreateLinkTest extends TestCase
 
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
             'api_token' => $user->api_token,
-            'file' => $file
+            'file' => $file,
         ]);
 
         $fileModel = File::first();
@@ -29,7 +28,7 @@ class CreateLinkTest extends TestCase
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/link/create'), [
             'api_token' => $user->api_token,
             'file_id' => $fileModel->id,
-            'only_once' => 0
+            'only_once' => 0,
         ]);
 
         $response->assertStatus(200);
@@ -51,14 +50,14 @@ class CreateLinkTest extends TestCase
 
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
             'api_token' => $user->api_token,
-            'file' => $file
+            'file' => $file,
         ]);
 
         $fileModel = File::first();
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/link/create'), [
             'api_token' => $user->api_token,
             'file_id' => $fileModel->id,
-            'only_once' => 1
+            'only_once' => 1,
         ]);
 
         $response->assertStatus(200);
@@ -81,12 +80,12 @@ class CreateLinkTest extends TestCase
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/link/create'), [
             'api_token' => $user->api_token,
             'file_id' => 10000,
-            'only_once' => 1
+            'only_once' => 1,
         ]);
 
         $response->assertStatus(404);
         $response->assertJson([
-            'message' => 'File not found'
+            'message' => 'File not found',
         ]);
     }
 
@@ -97,12 +96,12 @@ class CreateLinkTest extends TestCase
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/link/create'), [
             'api_token' => $user->api_token,
             'file_id' => $file->id,
-            'only_once' => 1
+            'only_once' => 1,
         ]);
 
         $response->assertStatus(404);
         $response->assertJson([
-            'message' => 'File not found'
+            'message' => 'File not found',
         ]);
     }
 }

@@ -33,7 +33,7 @@ class LinkCreateRequest extends FormRequest
                         $fail($attribute. ' is invalid.');
                     }
                 },
-            ]
+            ],
         ];
     }
 }

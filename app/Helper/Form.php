@@ -47,5 +47,4 @@ class Form
     {
         return view('form.form-close', $data);
     }
-
 }

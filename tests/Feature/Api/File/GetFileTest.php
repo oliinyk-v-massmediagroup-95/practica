@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Api\File;
 
-use App\Models\File;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
+use App\Models\File;
+use Illuminate\Http\UploadedFile;
+use Tests\Feature\Traits\FileDelete;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class GetFileTest extends TestCase
 {
@@ -20,17 +20,17 @@ class GetFileTest extends TestCase
 
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
             'api_token' => $user->api_token,
-            'file' => $file
+            'file' => $file,
         ]);
 
         $this->assertDatabaseHas('files', [
-            'id' => 1
+            'id' => 1,
         ]);
 
         $fileModel = File::first();
 
         $response = $this->get($this->prepareUrlForRequest(
-            '/api/user/file/get/' . $fileModel->id . "?api_token=" . $user->api_token
+            '/api/user/file/get/' . $fileModel->id . '?api_token=' . $user->api_token
         ));
 
         $response->assertStatus(200);
@@ -44,9 +44,9 @@ class GetFileTest extends TestCase
         $user = factory(User::class)->create();
 
         $response = $this->withHeaders([
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ])->get($this->prepareUrlForRequest(
-            '/api/user/file/get/' . "4444444" . "?api_token=" . $user->api_token
+            '/api/user/file/get/' . '4444444' . '?api_token=' . $user->api_token
         ));
 
         $response->assertStatus(404);
@@ -55,9 +55,9 @@ class GetFileTest extends TestCase
     public function testNotExistingUserToken()
     {
         $response = $this->withHeaders([
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ])->get($this->prepareUrlForRequest(
-            '/api/user/file/get/' . "4444444" . "?api_token=test"
+            '/api/user/file/get/' . '4444444' . '?api_token=test'
         ));
 
         $response->assertStatus(401);

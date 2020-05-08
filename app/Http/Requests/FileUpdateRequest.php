@@ -23,7 +23,6 @@ class FileUpdateRequest extends FormRequest
      */
     public function rules()
     {
-
         return [
             'file' => ['image', 'max:5120'],
             'comment' => ['max:255'],

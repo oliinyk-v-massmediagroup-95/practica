@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\File;
+use App\Services\LinkService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\User\LinkCreateRequest;
-use App\Models\File;
-use App\Models\Link;
-use App\Services\LinkService;
-use Illuminate\Http\Request;
 
 class LinkController extends Controller
 {
@@ -19,7 +17,7 @@ class LinkController extends Controller
 
         $file = File::findUserFile($user, $file_id)->first();
 
-        if (!isset($file)) {
+        if (! isset($file)) {
             return response(['message' => 'File not found'], 404);
         }
 

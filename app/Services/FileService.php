@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Helper\FileUploader\FileUploaderInterface;
-use App\Models\Comment;
-use App\Models\File;
 use App\User;
+use App\Models\File;
+use App\Models\Comment;
 use Illuminate\Http\UploadedFile;
+use App\Helper\FileUploader\FileUploaderInterface;
 
 class FileService
 {
@@ -50,7 +50,6 @@ class FileService
         ?string $deleteDate,
         ?string $commentText
     ): File {
-
         if (isset($file)) {
             $oldFilePath = $fileModel->getFilePath();
             if (file_exists($oldFilePath)) {
@@ -72,7 +71,7 @@ class FileService
 
         if (isset($commentModel)) {
             $commentModel->update(['text' => $commentText]);
-        } elseif (isset($commentText) && !isset($commentModel)) {
+        } elseif (isset($commentText) && ! isset($commentModel)) {
             Comment::create(['text' => $commentText, 'user_id' => $user->id]);
         }
 

@@ -2,14 +2,11 @@
 
 namespace Tests\Feature\Api\File;
 
-use App\Helper\FileUploader\SimpleFileUploader;
-use App\Models\File;
-use App\Services\FileService;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
+use App\Models\File;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DeleteFileTest extends TestCase
 {
@@ -22,20 +19,20 @@ class DeleteFileTest extends TestCase
 
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
             'api_token' => $user->api_token,
-            'file' => $file
+            'file' => $file,
         ]);
 
         $this->assertDatabaseHas('files', [
             'deleted_at' => null,
         ]);
 
-        $response = $this->postJson($this->prepareUrlForRequest("/api/user/file/delete/1"), [
+        $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/delete/1'), [
             'api_token' => $user->api_token,
         ]);
 
         $response->assertStatus(200);
         $response->assertJson([
-            'message' => 'File with ID:' . 1 . ' deleted'
+            'message' => 'File with ID:' . 1 . ' deleted',
         ]);
 
         $fileModel = File::onlyTrashed()->first();
@@ -43,7 +40,7 @@ class DeleteFileTest extends TestCase
             'deleted_at' => null,
         ]);
 
-        $this->assertTrue(!is_file($fileModel->getFilePath()));
+        $this->assertTrue(! is_file($fileModel->getFilePath()));
     }
 
     public function testDeleteNotExistingFile()
@@ -52,8 +49,8 @@ class DeleteFileTest extends TestCase
 
         $response = $this->withHeaders([
             'Accept' => 'application/json',
-        ])->post($this->prepareUrlForRequest("/api/user/file/delete/" . 333), [
-            'api_token' => $user->api_token
+        ])->post($this->prepareUrlForRequest('/api/user/file/delete/' . 333), [
+            'api_token' => $user->api_token,
         ]);
 
         $response->assertStatus(404);
@@ -63,7 +60,7 @@ class DeleteFileTest extends TestCase
     {
         $response = $this->withHeaders([
             'Accept' => 'application/json',
-        ])->post($this->prepareUrlForRequest("/api/user/file/delete/" . 333));
+        ])->post($this->prepareUrlForRequest('/api/user/file/delete/' . 333));
 
         $response->assertStatus(401);
     }

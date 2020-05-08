@@ -2,7 +2,6 @@
 
 namespace App\Helper\FileUploader;
 
-
 use Illuminate\Http\UploadedFile;
 
 class SimpleFileUploader implements FileUploaderInterface

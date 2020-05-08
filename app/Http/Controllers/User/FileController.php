@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\FileCreateReqeust;
-use App\Http\Requests\FileUpdateRequest;
-
 use App\Models\File;
 use App\Models\Link;
 use App\Services\FileService;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\FileCreateReqeust;
+use App\Http\Requests\FileUpdateRequest;
 
 class FileController extends Controller
 {
@@ -22,7 +22,7 @@ class FileController extends Controller
     public function index()
     {
         return view('user.pages.file.index', [
-            'files' => File::byUser(\Auth::user())->orderBy('id', 'desc')->get()
+            'files' => File::byUser(\Auth::user())->orderBy('id', 'desc')->get(),
         ]);
     }
 
@@ -71,7 +71,7 @@ class FileController extends Controller
 
         return view('user.pages.file.edit', [
             'file' => $file,
-            'comment' => $file->getCreatorComment()
+            'comment' => $file->getCreatorComment(),
         ]);
     }
 

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -61,7 +60,7 @@ class File extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'delete_date' => 'date'
+        'delete_date' => 'date',
     ];
 
     public function getFilePath(): string

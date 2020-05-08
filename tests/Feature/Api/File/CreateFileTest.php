@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Api\File;
 
-use App\Models\File;
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
+use App\Models\File;
+use Illuminate\Http\UploadedFile;
+use Tests\Feature\Traits\FileDelete;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateFileTest extends TestCase
 {
@@ -21,11 +21,11 @@ class CreateFileTest extends TestCase
 
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
             'api_token' => $user->api_token,
-            'file' => $file
+            'file' => $file,
         ]);
 
         $response->assertJson([
-            'id' => 1
+            'id' => 1,
         ]);
 
         $this->assertDatabaseHas('files', [
@@ -49,7 +49,7 @@ class CreateFileTest extends TestCase
         ]);
 
         $response->assertJson([
-            'id' => 1
+            'id' => 1,
         ]);
 
         $this->assertDatabaseHas('files', [
@@ -68,11 +68,11 @@ class CreateFileTest extends TestCase
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
             'api_token' => $user->api_token,
             'file' => $file,
-            'comment' => 'test'
+            'comment' => 'test',
         ]);
 
         $response->assertJson([
-            'id' => 1
+            'id' => 1,
         ]);
 
         $this->assertDatabaseHas('files', [
@@ -92,11 +92,11 @@ class CreateFileTest extends TestCase
             'api_token' => $user->api_token,
             'file' => $file,
             'delete_date' => Carbon::now()->addDays(1)->format('m/d/Y'),
-            'comment' => 'test'
+            'comment' => 'test',
         ]);
 
         $response->assertJson([
-            'id' => 1
+            'id' => 1,
         ]);
 
         $this->assertDatabaseHas('files', [
@@ -114,7 +114,7 @@ class CreateFileTest extends TestCase
 
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
             'api_token' => $user->api_token,
-            'file' => $file
+            'file' => $file,
         ]);
 
         $response->assertStatus(422);
@@ -142,7 +142,7 @@ class CreateFileTest extends TestCase
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
             'api_token' => $user->api_token,
             'file' => $file,
-            'delete_date' => 'test'
+            'delete_date' => 'test',
         ]);
 
         $response->assertStatus(422);
@@ -156,7 +156,7 @@ class CreateFileTest extends TestCase
         $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
             'api_token' => $user->api_token,
             'file' => $file,
-            'delete_date' => Carbon::now()->format('m/d/Y')
+            'delete_date' => Carbon::now()->format('m/d/Y'),
         ]);
 
         $response->assertStatus(422);

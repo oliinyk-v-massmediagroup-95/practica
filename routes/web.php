@@ -25,4 +25,3 @@ Route::prefix('/user')->name('user.')->middleware('auth')->group(function () {
 Route::get('/', 'HomeController@index');
 
 Auth::routes();
-

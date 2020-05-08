@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\File;
+use Illuminate\Http\Request;
+use App\Services\FileService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\User\FileCreateRequest;
-use App\Models\File;
-use App\Services\FileService;
-use Illuminate\Http\Request;
-
 
 class FileController extends Controller
 {
@@ -34,7 +33,7 @@ class FileController extends Controller
     {
         $file = File::findUserFile($request->user(), $id)->first();
 
-        if (!isset($file)) {
+        if (! isset($file)) {
             return response(['message' => 'File not found'], 404);
         }
 
@@ -46,7 +45,7 @@ class FileController extends Controller
         $user = $request->user();
         $file = File::findUserFile($user, $id)->first();
 
-        if (!isset($file)) {
+        if (! isset($file)) {
             return response()->json(['message' => 'File not found'], 404);
         }
 

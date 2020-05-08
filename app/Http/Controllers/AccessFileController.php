@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use App\Models\Link;
-use App\Services\LinkService;
 use Illuminate\Http\Request;
+use App\Services\LinkService;
 
 class AccessFileController extends Controller
 {
@@ -24,23 +24,18 @@ class AccessFileController extends Controller
 
     public function token(Request $request, LinkService $service)
     {
-        $token = $request->token;
-        $link = Link::with('file')->where('token', $token)->first();
+        $link = Link::with('file')->where('token', $request->token)->first();
 
-        if (!isset($link) || !is_file($link->file->getFilePath())) {
+        if (! isset($link) || ! is_file($link->file->getFilePath())) {
             abort(404);
         }
 
-        if (\Auth::check()) {
-            if (\Auth::id() === $link->user_id) {
-                return response()->file($link->file->getFilePath());
-            }
+        if (\Auth::check() && \Auth::id() === $link->user_id) {
+            return response()->file($link->file->getFilePath());
         }
 
-        if ($link->isOneTimeLink()) {
-            if ($link->hasBeenVisited()) {
-                abort(404);
-            }
+        if ($link->isOneTimeLink() && $link->hasBeenVisited()) {
+            abort(404);
         }
 
         $service->incrementLinkCounter($link);

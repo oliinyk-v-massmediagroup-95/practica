@@ -3,9 +3,9 @@
 namespace Tests\Feature\Api;
 
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LoginTest extends TestCase
 {
@@ -17,7 +17,7 @@ class LoginTest extends TestCase
 
         $response = $this->postJson('/api/login', [
             'email' => $user->email,
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $response->assertStatus(200);
@@ -32,12 +32,12 @@ class LoginTest extends TestCase
 
         $response = $this->postJson('/api/login', [
             'email' => $this->faker->email,
-            'password' => $this->faker->password
+            'password' => $this->faker->password,
         ]);
 
         $response->assertStatus(401);
         $response->assertJson([
-            "message" => "Invalid credentials"
+            'message' => 'Invalid credentials',
         ]);
     }
 }

@@ -2,11 +2,9 @@
 
 namespace App\Providers;
 
-use App\Helper\FileUploader\FileUploaderInterface;
-use App\Helper\FileUploader\SimpleFileUploader;
-use App\Helper\Form;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use App\Helper\FileUploader\SimpleFileUploader;
+use App\Helper\FileUploader\FileUploaderInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
