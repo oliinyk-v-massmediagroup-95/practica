@@ -12,8 +12,12 @@ function createLink() {
             url: $(this).attr('action'),
             type: $(this).attr('method'),
             data: $(this).serialize(),
-            success: (link) => {
-                $(this).parents('.link-block').find('.generated-links').append('<li><a href="'+ link +'">'+ link + '</a></li>')
+            success: (response) => {
+
+                if(response.data && response.data.accessLink) {
+                    const link = response.data.accessLink;
+                    $(this).parents('.link-block').find('.generated-links').append('<li><a href="' + link + '">' + link + '</a></li>');
+                }
             },
             // dataType: dataType
         });

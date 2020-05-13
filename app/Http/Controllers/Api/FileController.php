@@ -1,12 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
 use App\Models\File;
 use Illuminate\Http\Request;
 use App\Services\FileService;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Client\Response;
 use App\Http\Requests\Api\User\FileCreateRequest;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class FileController extends Controller
 {
@@ -17,35 +21,53 @@ class FileController extends Controller
         $this->service = $service;
     }
 
-    public function set(FileCreateRequest $request)
+    /**
+     * @param FileCreateRequest $request
+     *
+     * @return JsonResponse
+     */
+    public function set(FileCreateRequest $request): JsonResponse
     {
         $fileModel = $this->service->userCreateFile(
             $request->user(),
             $request->file('file'),
-            $request->input('delete_date'),
-            $request->input('comment')
+            $request->get('delete_date'),
+            $request->get('comment')
         );
 
         return response()->json(['id' => $fileModel->id]);
     }
 
-    public function get(Request $request, $id)
+    /**
+     * @param Request $request
+     * @param $id
+     *
+     * @return JsonResponse|BinaryFileResponse
+     */
+    public function get(Request $request, int $id)
     {
-        $file = File::findUserFile($request->user(), $id)->first();
+        $user = $request->user();
+        $file = File::query()->byUserId($user->id)->find($id);
 
-        if (! isset($file)) {
-            return response(['message' => 'File not found'], 404);
+        if (!isset($file)) {
+            return response()->json(['message' => 'File not found'], 404);
         }
 
         return response()->file($file->getFilePath());
     }
 
-    public function delete(Request $request, $id)
+    /**
+     * @param Request $request
+     * @param $id
+     *
+     * @return JsonResponse
+     */
+    public function delete(Request $request, $id): JsonResponse
     {
         $user = $request->user();
-        $file = File::findUserFile($user, $id)->first();
+        $file = File::query()->byUserId($user->id)->find($id);
 
-        if (! isset($file)) {
+        if (!isset($file)) {
             return response()->json(['message' => 'File not found'], 404);
         }
 

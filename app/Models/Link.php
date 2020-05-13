@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
-use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -17,16 +17,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int $user_id
  * @property-read \App\Models\File $file
- * @property-read \App\User $user
+ * @property-read \App\Models\User $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link query()
  * @mixin \Eloquent
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link onlyReusable()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link onlyTemporary()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link notVisited()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link visited()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link byUser(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Link byUserId(int $userId)
  */
 class Link extends Model
 {
@@ -51,9 +53,9 @@ class Link extends Model
         return $query->where('only_once', self::ONE_TIME_LINK);
     }
 
-    public function scopeByUser($query, User $user)
+    public function scopeByUserId($query, int $userId)
     {
-        return $query->where('user_id', $user->id);
+        return $query->where('user_id', $userId);
     }
 
     public function scopeOnlyReusable($query)
@@ -69,11 +71,6 @@ class Link extends Model
     public function hasBeenVisited(): bool
     {
         return $this->entry_counter > 0;
-    }
-
-    public function getGeneratedLink(): string
-    {
-        return route('token.link', ['token' => $this->token]);
     }
 
     public function file()

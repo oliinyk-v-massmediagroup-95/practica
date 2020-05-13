@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
@@ -6,13 +7,20 @@ use App\Models\File;
 use App\Models\Link;
 use Illuminate\Http\Request;
 use App\Services\LinkService;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AccessFileController extends Controller
 {
-    public function file(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return BinaryFileResponse
+     */
+    public function file(Request $request): ?BinaryFileResponse
     {
         if (\Auth::check()) {
-            $file = File::where('user_id', \Auth::id())->where('name', $request->file_name)->first();
+            $user = \Auth::user();
+            $file = File::query()->byUserId($user->id)->where('name', $request->file_name)->first();
 
             if (isset($file)) {
                 return response()->file($file->getFilePath());
@@ -22,11 +30,17 @@ class AccessFileController extends Controller
         abort(404);
     }
 
-    public function token(Request $request, LinkService $service)
+    /**
+     * @param Request $request
+     * @param LinkService $service
+     *
+     * @return BinaryFileResponse
+     */
+    public function token(Request $request, LinkService $service): BinaryFileResponse
     {
         $link = Link::with('file')->where('token', $request->token)->first();
 
-        if (! isset($link) || ! is_file($link->file->getFilePath())) {
+        if (!isset($link) && !is_file($link->file->getFilePath())) {
             abort(404);
         }
 
@@ -39,6 +53,7 @@ class AccessFileController extends Controller
         }
 
         $service->incrementLinkCounter($link);
+
         return response()->file($link->file->getFilePath());
     }
 }

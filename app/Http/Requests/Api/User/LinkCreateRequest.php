@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Requests\Api\User;
 
@@ -30,7 +31,7 @@ class LinkCreateRequest extends FormRequest
                 'required',
                 function ($attribute, $value, $fail) {
                     if ($value != Link::MULTI_TIME_LINK && $value != Link::ONE_TIME_LINK) {
-                        $fail($attribute. ' is invalid.');
+                        $fail($attribute . ' is invalid.');
                     }
                 },
             ],

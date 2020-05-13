@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Services;
 
-use App\User;
 use App\Models\File;
+use App\Models\User;
 use App\Models\Comment;
 use Illuminate\Http\UploadedFile;
 use App\Helper\FileUploader\FileUploaderInterface;
@@ -17,13 +18,28 @@ class FileService
         $this->uploader = $uploader;
     }
 
+    public function getDiskFolder(User $user): string
+    {
+        return (string) $user->id;
+    }
+
+    /**
+     * @param User $user
+     * @param UploadedFile $file
+     * @param string|null $deleteDate
+     * @param string|null $commentText
+     *
+     * @return File
+     *
+     * @throws \Exception
+     */
     public function userCreateFile(
         User $user,
         UploadedFile $file,
         ?string $deleteDate,
         ?string $commentText
     ): File {
-        $urlPath = $this->uploader->upload($file, $user->id);
+        $urlPath = $this->uploader->upload($file, $this->getDiskFolder($user));
 
         $fileModel = File::create([
             'ext' => $file->clientExtension(),
@@ -52,11 +68,12 @@ class FileService
     ): File {
         if (isset($file)) {
             $oldFilePath = $fileModel->getFilePath();
+
             if (file_exists($oldFilePath)) {
                 unlink($oldFilePath);
             }
 
-            $urlPath = $this->uploader->upload($file, $user->id);
+            $urlPath = $this->uploader->upload($file, $this->getDiskFolder($user));
 
             $newData['ext'] = $file->clientExtension();
             $newData['path'] = $urlPath;
@@ -67,11 +84,12 @@ class FileService
         $newData['delete_date'] = isset($deleteDate) ? new \DateTime($deleteDate) : $deleteDate;
 
         $fileModel->update($newData);
+
         $commentModel = $fileModel->getCreatorComment();
 
         if (isset($commentModel)) {
             $commentModel->update(['text' => $commentText]);
-        } elseif (isset($commentText) && ! isset($commentModel)) {
+        } elseif (isset($commentText) && !isset($commentModel)) {
             Comment::create(['text' => $commentText, 'user_id' => $user->id]);
         }
 
@@ -80,9 +98,9 @@ class FileService
 
     public function userDeleteFile(User $user, File $file): void
     {
-        if ($user->id == $file->user_id) {
+        if ($user->id === $file->user_id) {
             if (file_exists($file->getFilePath())) {
-                unlink($file->getFilePath()) ;
+                unlink($file->getFilePath());
             }
 
             $file->delete();
