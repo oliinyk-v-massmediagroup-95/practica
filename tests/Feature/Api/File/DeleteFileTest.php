@@ -1,66 +1,60 @@
 <?php
+declare(strict_types=1);
 
 namespace Tests\Feature\Api\File;
 
-use App\User;
 use Tests\TestCase;
 use App\Models\File;
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class DeleteFileTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
-    public function testFileDelete()
+    public function test_file_delete()
     {
         $user = factory(User::class)->create();
         $file = UploadedFile::fake()->image('avatar.jpg');
 
-        $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
+        $this->postJson('/api/user/file/set', [
             'api_token' => $user->api_token,
             'file' => $file,
         ]);
 
-        $this->assertDatabaseHas('files', [
-            'deleted_at' => null,
-        ]);
+        $fileModel = File::query()->latest()->first();
 
-        $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/delete/1'), [
+        $response = $this->postJson('/api/user/file/delete/' . $fileModel->id, [
             'api_token' => $user->api_token,
         ]);
 
         $response->assertStatus(200);
         $response->assertJson([
-            'message' => 'File with ID:' . 1 . ' deleted',
+            'message' => 'File with ID:' . $fileModel->id . ' deleted',
         ]);
 
-        $fileModel = File::onlyTrashed()->first();
-        $this->assertDatabaseMissing('files', [
-            'deleted_at' => null,
-        ]);
-
-        $this->assertTrue(! is_file($fileModel->getFilePath()));
+        \Storage::disk('public')->assertMissing($fileModel->getUrlPath());
     }
 
-    public function testDeleteNotExistingFile()
+    public function test_delete_not_existing_file()
     {
         $user = factory(User::class)->create(['id' => 5]);
 
         $response = $this->withHeaders([
             'Accept' => 'application/json',
-        ])->post($this->prepareUrlForRequest('/api/user/file/delete/' . 333), [
+        ])->post('/api/user/file/delete/' . 333, [
             'api_token' => $user->api_token,
         ]);
 
         $response->assertStatus(404);
     }
 
-    public function testDeleteFileWithoutUserToken()
+    public function test_delete_file_without_user_token()
     {
         $response = $this->withHeaders([
             'Accept' => 'application/json',
-        ])->post($this->prepareUrlForRequest('/api/user/file/delete/' . 333));
+        ])->post('/api/user/file/delete/' . 333);
 
         $response->assertStatus(401);
     }

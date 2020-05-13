@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
-use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -28,9 +28,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $multi_time_links_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Link[] $one_time_links
  * @property-read int|null $one_time_links_count
- * @property-read \App\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\File byUser(\App\User $user)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\File findUserFile(\App\User $user, $file_id)
+ * @property-read \App\Models\User $user
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\File byUserId(int $userId)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\File findUserFile(\App\Models\User $user, $file_id)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\File newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\File newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\File query()
@@ -46,7 +47,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\File whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\File whereUserId($value)
  * @mixin \Eloquent
+ *
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ *
  * @method static \Illuminate\Database\Query\Builder|\App\Models\File onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\File whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\File withTrashed()
@@ -65,7 +68,7 @@ class File extends Model
 
     public function getFilePath(): string
     {
-        return storage_path('app/public/'.$this->path);
+        return storage_path('app/public/' . $this->path);
     }
 
     public function getUrlPath(): string
@@ -78,14 +81,9 @@ class File extends Model
         return $this->comments->where('user_id', $this->user_id)->first();
     }
 
-    public function scopeByUser($query, User $user)
+    public function scopeByUserId($query, int $userId)
     {
-        return $query->where('user_id', $user->id);
-    }
-
-    public function scopeFindUserFile($query, User $user, $file_id)
-    {
-        return $query->where('user_id', $user->id)->where('id', $file_id);
+        return $query->where('user_id', $userId);
     }
 
     public function user()

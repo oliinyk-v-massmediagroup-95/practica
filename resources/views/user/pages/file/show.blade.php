@@ -87,9 +87,9 @@
                         <div class="card-body">
                             <div class="tab-content">
                                 <ul class="generated-links">
-                                    @foreach($multiTimeLinks as $link)
+                                    @foreach($multiTimeLinks['data'] as $link)
                                         <li>
-                                            <a href="{{$link->getGeneratedLink()}}">{{$link->getGeneratedLink()}}</a>
+                                            <a href="{{$link['accessLink']}}">{{$link['accessLink']}}</a>
                                         </li>
                                     @endforeach
                                 </ul>
@@ -119,10 +119,10 @@
                         <div class="card-body">
                             <div class="tab-content">
                                 <ul class="generated-links">
-                                    @foreach($oneTimeLinks as $link)
+                                    @foreach($oneTimeLinks['data'] as $link)
                                         <li>
-                                            <a href="{{$link->getGeneratedLink()}}">{{$link->getGeneratedLink()}}</a>
-                                            @if($link->hasBeenVisited())<span> (Used)</span>@endif
+                                            <a href="{{$link['accessLink']}}">{{$link['accessLink']}}</a>
+                                            @if($link['isVisited'])<span> (Used)</span>@endif
                                         </li>
                                     @endforeach
                                 </ul>

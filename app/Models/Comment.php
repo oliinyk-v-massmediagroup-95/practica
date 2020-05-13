@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $user_id
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\File[] $file
  * @property-read int|null $file_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Comment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Comment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Comment query()

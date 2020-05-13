@@ -1,17 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace Tests\Feature\Api;
 
-use App\User;
 use Tests\TestCase;
+use App\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class LoginTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use DatabaseTransactions, WithFaker;
 
-    public function testLoginAndGetApiToken()
+    public function test_login_and_get_api_token()
     {
         $user = factory(User::class)->create();
 
@@ -26,7 +27,7 @@ class LoginTest extends TestCase
         ]);
     }
 
-    public function testFailedLogin()
+    public function test_failed_login()
     {
         $user = factory(User::class)->create();
 

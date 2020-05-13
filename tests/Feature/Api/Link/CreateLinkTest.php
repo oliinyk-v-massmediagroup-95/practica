@@ -1,31 +1,32 @@
 <?php
+declare(strict_types=1);
 
 namespace Tests\Feature\Api\Link;
 
-use App\User;
 use Tests\TestCase;
 use App\Models\File;
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Tests\Feature\Traits\FileDelete;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class CreateLinkTest extends TestCase
 {
-    use RefreshDatabase, FileDelete;
+    use DatabaseTransactions, FileDelete;
 
-    public function testCreateMultiTimeLink()
+    public function test_create_multi_time_link()
     {
         $user = factory(User::class)->create();
         $file = UploadedFile::fake()->image('avatar.jpg');
 
-        $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
+        $response = $this->postJson('/api/user/file/set', [
             'api_token' => $user->api_token,
             'file' => $file,
         ]);
 
-        $fileModel = File::first();
+        $fileModel = File::latest()->first();
 
-        $response = $this->postJson($this->prepareUrlForRequest('/api/user/link/create'), [
+        $response = $this->postJson('/api/user/link/create', [
             'api_token' => $user->api_token,
             'file_id' => $fileModel->id,
             'only_once' => 0,
@@ -34,27 +35,27 @@ class CreateLinkTest extends TestCase
         $response->assertStatus(200);
         $url = json_decode($response->baseResponse->getContent());
 
-        $response = $this->call('GET', $url);
+        $response = $this->call('GET', $url->data->accessLink);
         $response->assertStatus(200);
 
-        $response = $this->call('GET', $url);
+        $response = $this->call('GET', $url->data->accessLink);
         $response->assertStatus(200);
 
         $this->assertFileExistAndDelete($fileModel);
     }
 
-    public function testCreateOneTimeLink()
+    public function test_create_one_time_link()
     {
         $user = factory(User::class)->create();
         $file = UploadedFile::fake()->image('avatar.jpg');
 
-        $response = $this->postJson($this->prepareUrlForRequest('/api/user/file/set'), [
+        $response = $this->postJson('/api/user/file/set', [
             'api_token' => $user->api_token,
             'file' => $file,
         ]);
 
-        $fileModel = File::first();
-        $response = $this->postJson($this->prepareUrlForRequest('/api/user/link/create'), [
+        $fileModel = File::latest()->first();
+        $response = $this->postJson('/api/user/link/create', [
             'api_token' => $user->api_token,
             'file_id' => $fileModel->id,
             'only_once' => 1,
@@ -63,21 +64,23 @@ class CreateLinkTest extends TestCase
         $response->assertStatus(200);
         $url = json_decode($response->baseResponse->getContent());
 
-        $response = $this->call('GET', $url);
+        $differentUser = factory(User::class)->create();
+
+        $response = $this->actingAs($differentUser)->call('GET', $url->data->accessLink);
         $response->assertStatus(200);
 
-        $response = $this->call('GET', $url);
+        $response = $this->actingAs($differentUser)->call('GET', $url->data->accessLink);
         $response->assertStatus(404);
 
         $this->assertFileExistAndDelete($fileModel);
     }
 
-    public function testCreateLinkForNotExistingFile()
+    public function test_create_link_for_not_existing_file()
     {
         $user = factory(User::class)->create();
         $file = factory(File::class)->create(['user_id' => $user->id]);
 
-        $response = $this->postJson($this->prepareUrlForRequest('/api/user/link/create'), [
+        $response = $this->postJson('/api/user/link/create', [
             'api_token' => $user->api_token,
             'file_id' => 10000,
             'only_once' => 1,
@@ -89,11 +92,12 @@ class CreateLinkTest extends TestCase
         ]);
     }
 
-    public function testCreateLinkForOtherUserFile()
+    public function test_create_link_for_other_user_file()
     {
         $user = factory(User::class)->create();
         $file = factory(File::class)->create(['user_id' => 100]);
-        $response = $this->postJson($this->prepareUrlForRequest('/api/user/link/create'), [
+
+        $response = $this->postJson('/api/user/link/create', [
             'api_token' => $user->api_token,
             'file_id' => $file->id,
             'only_once' => 1,

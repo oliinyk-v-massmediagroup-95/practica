@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Helper\FileUploader;
 
@@ -10,7 +11,7 @@ class SimpleFileUploader implements FileUploaderInterface
 
     public function upload(UploadedFile $file, string $folder = ''): string
     {
-        $storeFolder = strlen($folder) ? '/'.$folder : '';
+        $storeFolder = strlen($folder) ? '/' . $folder : '';
 
         return $file->store($this->defaultFolder . $storeFolder, 'public');
     }
