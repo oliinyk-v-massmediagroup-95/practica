@@ -80,8 +80,6 @@ class FileController extends Controller
             'user' => $user,
             'multiTimeLinks' => $fractal->createData(new Collection($file->multi_time_links, $linkTransformer))->toArray(),
             'oneTimeLinks' => $fractal->createData(new Collection($file->one_time_links, $linkTransformer))->toArray(),
-            //            'multiTimeLinks' => $file->multi_time_links ?? [],
-            //            'oneTimeLinks' => $file->one_time_links ?? [],
             'ONE_TIME_LINK' => Link::ONE_TIME_LINK,
             'MULTI_TIME_LINK' => Link::MULTI_TIME_LINK,
         ]);
