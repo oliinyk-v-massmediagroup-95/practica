@@ -7,6 +7,10 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view('welcome');
+        if (\Auth::check()) {
+            return redirect(route('user.file.index'));
+        }
+
+        return redirect(route('login'));
     }
 }
