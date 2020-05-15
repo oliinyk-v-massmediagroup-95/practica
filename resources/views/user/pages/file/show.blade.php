@@ -79,71 +79,90 @@
                         </div><!-- /.card-body -->
                     </div>
                     <!-- ./card -->
+                    <file-links-list
+                        form-action="{{route('api.user.link.create')}}"
+                        data="{{json_encode($multiTimeLinks['data'])}}"
+                        :file-id="{{$file->id}}"
+                        api-token="{{$user->api_token}}"
+                        header="Multi-Time Links"
+                        create-text="Create Multi-Time Link"
+                        :only-once="0"
+                    ></file-links-list>
 
-                    <div class='card link-block'>
-                        <div class="card-header d-flex p-0">
-                            <h4 class="p-3">Multi Time Links</h4>
-                        </div><!-- /.card-header -->
-                        <div class="card-body">
-                            <div class="tab-content">
-                                <ul class="generated-links">
-                                    @foreach($multiTimeLinks['data'] as $link)
-                                        <li>
-                                            <a href="{{$link['accessLink']}}">{{$link['accessLink']}}</a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                                {{--                                    @foreach(range(1, 1) as $link)--}}
-                                {{--                                        <h6>test</h6>--}}
-                                {{--                                    @endforeach--}}
-                            </div>
+                    <file-links-list
+                        form-action="{{route('api.user.link.create')}}"
+                        data="{{json_encode($oneTimeLinks['data'])}}"
+                        :file-id="{{$file->id}}"
+                        api-token="{{$user->api_token}}"
+                        header="One-Time Links"
+                        create-text="Create One-Time Link"
+                        :only-once="1"
+                    ></file-links-list>
 
-                            <div class="row">
-                                <div class="col col-2">
-                                    <form class="create-link" method="POST" action="{{route('api.user.link.create')}}">
-                                        {{csrf_field()}}
-                                        <input type="hidden" name="only_once" value="{{ $MULTI_TIME_LINK }}">
-                                        <input type="hidden" name="api_token" value="{{$user->api_token}}">
-                                        <input type="hidden" name="file_id" value="{{$file->id}}">
-                                        <button class="btn btn-success">Create Multi-Time Link</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+{{--                    <div class='card link-block'>--}}
+{{--                        <div class="card-header d-flex p-0">--}}
+{{--                            <h4 class="p-3">Multi Time Links</h4>--}}
+{{--                        </div><!-- /.card-header -->--}}
+{{--                        <div class="card-body">--}}
+{{--                            <div class="tab-content">--}}
+{{--                                <ul class="generated-links">--}}
+{{--                                    @foreach($multiTimeLinks['data'] as $link)--}}
+{{--                                        <li>--}}
+{{--                                            <a href="{{$link['accessLink']}}">{{$link['accessLink']}}</a>--}}
+{{--                                        </li>--}}
+{{--                                    @endforeach--}}
+{{--                                </ul>--}}
+{{--                                --}}{{--                                    @foreach(range(1, 1) as $link)--}}
+{{--                                --}}{{--                                        <h6>test</h6>--}}
+{{--                                --}}{{--                                    @endforeach--}}
+{{--                            </div>--}}
 
-                    <div class='card link-block'>
-                        <div class="card-header d-flex p-0">
-                            <h4 class="p-3">One Time Links</h4>
-                        </div><!-- /.card-header -->
-                        <div class="card-body">
-                            <div class="tab-content">
-                                <ul class="generated-links">
-                                    @foreach($oneTimeLinks['data'] as $link)
-                                        <li>
-                                            <a href="{{$link['accessLink']}}">{{$link['accessLink']}}</a>
-                                            @if($link['isVisited'])<span> (Used)</span>@endif
-                                        </li>
-                                    @endforeach
-                                </ul>
-                                {{--                                    @foreach(range(1, 1) as $link)--}}
-                                {{--                                        <h6>test</h6>--}}
-                                {{--                                    @endforeach--}}
-                            </div>
+{{--                            <div class="row">--}}
+{{--                                <div class="col col-2">--}}
+{{--                                    <form class="create-link" method="POST" action="{{route('api.user.link.create')}}">--}}
+{{--                                        {{csrf_field()}}--}}
+{{--                                        <input type="hidden" name="only_once" value="{{ $MULTI_TIME_LINK }}">--}}
+{{--                                        <input type="hidden" name="api_token" value="{{$user->api_token}}">--}}
+{{--                                        <input type="hidden" name="file_id" value="{{$file->id}}">--}}
+{{--                                        <button class="btn btn-success">Create Multi-Time Link</button>--}}
+{{--                                    </form>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
 
-                            <div class="row">
-                                <div class="col col-2">
-                                    <form class="create-link" method="POST" action="{{route('api.user.link.create')}}">
-                                        {{csrf_field()}}
-                                        <input type="hidden" name="only_once" value="{{ $ONE_TIME_LINK }}">
-                                        <input type="hidden" name="api_token" value="{{$user->api_token}}">
-                                        <input type="hidden" name="file_id" value="{{$file->id}}">
-                                        <button class="btn btn-success">Create One-Time Link</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+{{--                    <div class='card link-block'>--}}
+{{--                        <div class="card-header d-flex p-0">--}}
+{{--                            <h4 class="p-3">One Time Links</h4>--}}
+{{--                        </div><!-- /.card-header -->--}}
+{{--                        <div class="card-body">--}}
+{{--                            <div class="tab-content">--}}
+{{--                                <ul class="generated-links">--}}
+{{--                                    @foreach($oneTimeLinks['data'] as $link)--}}
+{{--                                        <li>--}}
+{{--                                            <a href="{{$link['accessLink']}}">{{$link['accessLink']}}</a>--}}
+{{--                                            @if($link['isVisited'])<span> (Used)</span>@endif--}}
+{{--                                        </li>--}}
+{{--                                    @endforeach--}}
+{{--                                </ul>--}}
+{{--                                --}}{{--                                    @foreach(range(1, 1) as $link)--}}
+{{--                                --}}{{--                                        <h6>test</h6>--}}
+{{--                                --}}{{--                                    @endforeach--}}
+{{--                            </div>--}}
+
+{{--                            <div class="row">--}}
+{{--                                <div class="col col-2">--}}
+{{--                                    <form class="create-link" method="POST" action="{{route('api.user.link.create')}}">--}}
+{{--                                        {{csrf_field()}}--}}
+{{--                                        <input type="hidden" name="only_once" value="{{ $ONE_TIME_LINK }}">--}}
+{{--                                        <input type="hidden" name="api_token" value="{{$user->api_token}}">--}}
+{{--                                        <input type="hidden" name="file_id" value="{{$file->id}}">--}}
+{{--                                        <button class="btn btn-success">Create One-Time Link</button>--}}
+{{--                                    </form>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
                 </div>
             </div>
         </div>

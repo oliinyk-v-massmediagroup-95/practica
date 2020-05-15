@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/uploads/{id}/{file_name}', 'AccessFileController@file');
 Route::get('/file/{token}', 'AccessFileController@token')->name('token.link');
 
-Route::prefix('/user')->name('user.')->middleware('auth')->group(function () {
+Route::prefix('/user')->name('user.')->middleware(['auth'])->group(function () {
     Route::resource('file', 'User\FileController');
 
     Route::get('/report', 'User\ReportController@index')->name('report.index');

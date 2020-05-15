@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http;
 
+use App\Http\Middleware\LaravelToJavaScript;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel

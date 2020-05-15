@@ -20,7 +20,9 @@ import Vuetify from "vuetify";
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./src/components/ExampleComponent.vue').default);
+Vue.component('sidebar-element', require('./src/components/SidebarElement.vue').default);
+Vue.component('file-table', require('./src/components/File/FileTable.vue').default);
+Vue.component('file-links-list', require('./src/components/File/FileLinksList').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

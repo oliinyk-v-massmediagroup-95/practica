@@ -6,7 +6,11 @@
     </div>
     <!-- /.input group -->
 
-    @error($name)
-        <span id="{{$name.'-error'}}" style="display: block" class="error invalid-feedback">{{$message}}</span>
-    @enderror
+
 </div>
+
+@error($name)
+<v-alert type="error">
+    {{$message}}
+</v-alert>
+@enderror

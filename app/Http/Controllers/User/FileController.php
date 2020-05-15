@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 
 use App\Models\File;
 use App\Models\Link;
+use App\Transformers\FileTransformer;
 use App\Transformers\LinkTransformer;
 use Illuminate\View\View;
 
@@ -14,14 +15,19 @@ use App\Http\Requests\FileCreateReqeust;
 use App\Http\Requests\FileUpdateRequest;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
+use League\Fractal\TransformerAbstract;
 
 class FileController extends Controller
 {
-    private $service;
+    private FileService $service;
+    private Manager $fractal;
+    private TransformerAbstract $fileTransformer;
 
-    public function __construct(FileService $service)
+    public function __construct(FileService $service, Manager $fractal, FileTransformer $fileTransformer)
     {
         $this->service = $service;
+        $this->fractal = $fractal;
+        $this->fileTransformer = $fileTransformer;
     }
 
     /**
@@ -30,9 +36,13 @@ class FileController extends Controller
     public function index(): View
     {
         $user = \Auth::user();
+        $data = File::query()->byUserId($user->id)->orderBy('id', 'desc')->get();
+
+        $files = $this->fractal->createData(new Collection($data, $this->fileTransformer))->toArray();
 
         return view('user.pages.file.index', [
-            'files' => File::query()->byUserId($user->id)->orderBy('id', 'desc')->get(),
+            'files' => $files,
+            'createFileRoute' => route('user.file.create')
         ]);
     }
 
